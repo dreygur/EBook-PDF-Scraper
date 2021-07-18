@@ -1,0 +1,10 @@
+blessed==1.18.1
+certifi==2021.5.30
+charset-normalizer==2.0.3
+enlighten==1.10.1
+idna==3.2
+prefixed==0.3.2
+requests==2.26.0
+six==1.16.0
+urllib3==1.26.6
+wcwidth==0.2.5
