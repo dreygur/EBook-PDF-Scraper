@@ -9,41 +9,8 @@ import enlighten
 import requests as rq
 from urllib.parse import unquote
 
-def get_all_urls() -> list:
-  # WP-JSON api to get all the pages
-  uri = "https://bdebooks.com/wp-json/wp/v2/genres?_fields=link&per_page=100&page="
-  urls = []
-  page = 1
-
-  # Loop through the pages of WP-JSON api
-  while True:
-    res = rq.get(f'{uri}{page}')
-    if len(res.json()) == 0:
-      return urls
-    for url in res.json():
-      urls.append(url.get('link'))    
-    page += 1
-  
-  return urls
-
-def get_books(uri: str) -> list:
-  """Get Book Link
-
-  Args:
-    str (uri): Page link where books are listed
-
-  Returns:
-    list: Individual book's page link
-  """
-  res = rq.get(uri)
-
-  if res.status_code != 200: return
-
-  # Find all books page
-  links = re.findall(r'bdebooks\.com\/books\/[a-zA-Z0-9-]*', res.text)
-  links = ['https://' + link for link in links]
-
-  return links
+# Internal Import
+from app import get_all_urls, get_books
 
 def db(uri: str) -> None:
   """Download the Book
