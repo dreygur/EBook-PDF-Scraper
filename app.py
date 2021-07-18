@@ -50,6 +50,8 @@ def download(uri: str) -> None:
   Args:
     uri (str): Download Link
   """
+  if not uri.startswith('http'): 'https://' + uri
+  
   res = rq.get(uri)
   if res.status_code != 200: return
 
@@ -90,6 +92,9 @@ if __name__ == '__main__':
     download_location = os.path.join(os.getcwd(), 'books')
     if not os.path.exists(download_location):
       os.mkdir(download_location)
+    
+    if len(sys.argv) == 2:
+      download(sys.argv[1])
     main()
   except KeyboardInterrupt:
     sys.exit()
