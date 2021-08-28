@@ -20,9 +20,9 @@ def get_all_urls() -> list:
     if len(res.json()) == 0:
       return urls
     for url in res.json():
-      urls.append(url.get('link'))    
+      urls.append(url.get('link'))
     page += 1
-  
+
   return urls
 
 def get_books(uri: str) -> list:
@@ -51,7 +51,7 @@ def download(uri: str) -> None:
     uri (str): Download Link
   """
   if not uri.startswith('http'): 'https://' + uri
-  
+
   res = rq.get(uri)
   if res.status_code != 200: return
 
@@ -61,8 +61,21 @@ def download(uri: str) -> None:
   if len(link) != 0:
     res = rq.get('https://' + link[0], stream=True)
 
+    # Filename
     d = res.headers['content-disposition']
     fname = unquote(re.findall("filename=(.+)", d)[0]).replace('"', '')
+    fname = re.sub(r'\s\([A-z.].*\)', '', fname)
+
+    # Author's Name
+    try:
+      author = re.search(r'\sby\s([A-z\s]{1,})', fname, flags=re.IGNORECASE).group(1)
+    except AttributeError:
+      pass
+
+    # Download Location for Different Authors
+    location = os.path.join(download_location, author)
+    if not os.path.isdir(location):
+      os.mkdir(location)
 
     dlen = int(res.headers.get('Content-Length', '0')) or None
     print(f"[+] {fname}")
@@ -73,7 +86,7 @@ def download(uri: str) -> None:
       total = dlen and math.ceil(dlen / 2 ** 20),
       unit = 'MiB',
       leave = False
-    ) as ctr, open(os.path.join(download_location, fname), 'wb', buffering=2**24) as f:
+    ) as ctr, open(os.path.join(location, fname), 'wb', buffering=2**24) as f:
       for chunk in res.iter_content(chunk_size = 2 ** 20):
         f.write(chunk)
         ctr.update()
@@ -92,7 +105,7 @@ if __name__ == '__main__':
     download_location = os.path.join(os.getcwd(), 'books')
     if not os.path.exists(download_location):
       os.mkdir(download_location)
-    
+
     if len(sys.argv) == 2:
       download(sys.argv[1])
     main()

@@ -1,4 +1,4 @@
 books/*
-env/*
+venv/*
 urls.txt
 __pycache__/*
