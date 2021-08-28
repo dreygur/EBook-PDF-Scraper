@@ -69,7 +69,7 @@ def download(uri: str) -> None:
     # Author's Name
     author = ''
     try:
-      author = re.search(r'\sby\s([A-z\s]{1,})', fname, flags=re.IGNORECASE).group(1)
+      author = re.search(r'\s?\s?by\s?\s([A-z\s]{1,})', fname, flags=re.IGNORECASE).group(1)
     except AttributeError:
       pass
 
@@ -109,6 +109,7 @@ if __name__ == '__main__':
 
     if len(sys.argv) == 2:
       download(sys.argv[1])
-    main()
+    else:
+      main()
   except KeyboardInterrupt:
     sys.exit()
