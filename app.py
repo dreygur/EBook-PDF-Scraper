@@ -64,9 +64,10 @@ def download(uri: str) -> None:
     # Filename
     d = res.headers['content-disposition']
     fname = unquote(re.findall("filename=(.+)", d)[0]).replace('"', '')
-    fname = re.sub(r'\s\([A-z.].*\)', '', fname)
+    fname = re.sub(r'\s?-?\s\([A-z.].*\)', '', fname)
 
     # Author's Name
+    author = ''
     try:
       author = re.search(r'\sby\s([A-z\s]{1,})', fname, flags=re.IGNORECASE).group(1)
     except AttributeError:
